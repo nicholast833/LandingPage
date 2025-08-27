@@ -52,10 +52,10 @@
                         Thank you for visiting my landing page. I invite you to explore my portfolio and connect with me on my professional platforms.
                     </p>
                     <div class="flex justify-center space-x-4">
-                        <a href="https://nicholast833.github.io/Portfolio/" target="_blank" rel="noopener noreferrer" class="border border-primary-500 text-primary-400 hover:bg-primary-900 hover:bg-opacity-20 px-6 py-3 rounded-full transition duration-300 flex items-center">
+                        <a href="https://nicholast833.github.io/Portfolio/" target="_blank" rel="noopener noreferrer" class="track-click border border-primary-500 text-primary-400 hover:bg-primary-900 hover:bg-opacity-20 px-6 py-3 rounded-full transition duration-300 flex items-center" data-track-name="Portfolio">
                             <i class="fas fa-eye mr-2"></i> View Portfolio
                         </a>
-                        <a href="https://nicholast833.github.io/Resume/NicholasTaylor-Resume.pdf" target="_blank" rel="noopener noreferrer" download="Resume.pdf" class="border border-primary-500 text-primary-400 hover:bg-primary-900 hover:bg-opacity-20 px-6 py-3 rounded-full transition duration-300 flex items-center">
+                        <a href="https://nicholast833.github.io/Resume/NicholasTaylor-Resume.pdf" target="_blank" rel="noopener noreferrer" download="Resume.pdf" class="track-click border border-primary-500 text-primary-400 hover:bg-primary-900 hover:bg-opacity-20 px-6 py-3 rounded-full transition duration-300 flex items-center" data-track-name="Resume">
                             <i class="fas fa-download mr-2"></i> Download Resume
                         </a>
                     </div>
@@ -69,15 +69,19 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                  <div class="contact-card linkedin-card bg-gray-800 rounded-xl p-6 flex flex-col items-center text-center">
                     <div class="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center mb-4"> <i class="fab fa-linkedin-in text-white text-2xl"></i> </div>
-                    <a href="https://www.linkedin.com/in/nicholast833/" target="_blank" class="mt-auto w-full"> <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition duration-300"> LinkedIn </button> </a>
+                    <a href="https://www.linkedin.com/in/nicholast833/" target="_blank" class="mt-auto w-full"> 
+                        <button class="track-click w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition duration-300" data-track-name="LinkedIn"> LinkedIn </button> 
+                    </a>
                 </div>
                 <div class="contact-card handshake-card bg-gray-800 rounded-xl p-6 flex flex-col items-center text-center">
                     <div class="w-16 h-16 rounded-full bg-lime-600 flex items-center justify-center mb-4"> <i class="fas fa-handshake text-white text-2xl"></i> </div>
-                    <a href="https://app.joinhandshake.com/profiles/nicholast833" target="_blank" class="mt-auto w-full"> <button class="w-full bg-lime-600 hover:bg-lime-700 text-white py-2 rounded-lg transition duration-300"> Handshake </button> </a>
+                    <a href="https://app.joinhandshake.com/profiles/nicholast833" target="_blank" class="mt-auto w-full"> 
+                        <button class="track-click w-full bg-lime-600 hover:bg-lime-700 text-white py-2 rounded-lg transition duration-300" data-track-name="Handshake"> Handshake </button> 
+                    </a>
                 </div>
                 <div class="contact-card email-card bg-gray-800 rounded-xl p-6 flex flex-col items-center text-center">
                     <div class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center mb-4"> <i class="fas fa-envelope text-white text-2xl"></i> </div>
-                    <button id="email-btn" data-email="nicholast833@gmail.com" class="mt-auto w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition duration-300">
+                    <button id="email-btn" data-email="nicholast833@gmail.com" class="track-click mt-auto w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition duration-300" data-track-name="Email">
                         Email
                     </button>
                 </div>
@@ -91,7 +95,7 @@
             <div id="popupContent" class="p-4 text-center transition-all duration-300">
                 <div id="formSection">
                     <p class="text-gray-200 mb-2 text-sm">Love Data? Me too!</p>
-                    <p class="text-gray-400 text-xs mb-3">If you're representing a company, <br> I'd appreciate you sharing its name.</p>
+                    <p class="text-gray-400 text-xs mb-3">If you're representing a company, I'd appreciate you sharing its name.</p>
                     <input type="text" id="companyInput" placeholder="Your Company" class="w-full bg-gray-700 text-white px-3 py-2 rounded-md mb-3 text-sm text-center focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                     <button id="submitCompany" class="w-full border border-primary-500 text-primary-400 hover:bg-primary-900/40 px-3 py-2 rounded-md text-sm transition duration-300">Submit</button>
                 </div>
@@ -103,20 +107,12 @@
     </div>
     
     <script type="module">
-        // Import the functions you need from the SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
         import { 
-            getFirestore, 
-            collection, 
-            doc, 
-            setDoc, 
-            getDoc, 
-            addDoc, 
-            increment, 
-            serverTimestamp 
+            getFirestore, collection, doc, setDoc, getDoc, addDoc, 
+            increment, serverTimestamp, updateDoc, arrayUnion 
         } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCie6KnCFUvvp62kC409HgBqpOPNIQdr_c",
             authDomain: "landing-page-fe3ce.firebaseapp.com",
@@ -127,62 +123,71 @@
             measurementId: "G-3GX6VYVKWG"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
         async function handlePageLoad() {
+            const sessionId = self.crypto.randomUUID();
+            const urlParams = new URLSearchParams(window.location.search);
+            const isNfcVisitor = urlParams.get('source') === 'nfc';
+            const source = isNfcVisitor ? 'nfc' : 'direct';
+
             const popup = document.getElementById('dataPopup');
             const popupHeader = document.getElementById('popupHeader');
             const popupContent = document.getElementById('popupContent');
             const hideBtn = document.getElementById('hidePopup');
             const submitBtn = document.getElementById('submitCompany');
-            const emailBtn = document.getElementById('email-btn'); // Get email button
-            const urlParams = new URLSearchParams(window.location.search);
-            const isNfcVisitor = urlParams.get('source') === 'nfc';
+            const emailBtn = document.getElementById('email-btn');
 
-            // --- 1. Track Visitor ---
+            const sessionRef = doc(db, 'sessions', sessionId);
+            await setDoc(sessionRef, {
+                sessionId: sessionId,
+                source: source,
+                sessionStart: serverTimestamp(),
+                surveySubmitted: false,
+                clickedButtons: []
+            });
+
             const analyticsRef = doc(db, 'analytics', 'visitorCounts');
             const fieldToIncrement = isNfcVisitor ? 'nfcVisitors' : 'nonNfcVisitors';
-            await setDoc(analyticsRef, { 
-                [fieldToIncrement]: increment(1) 
-            }, { merge: true });
+            await setDoc(analyticsRef, { [fieldToIncrement]: increment(1) }, { merge: true });
 
-            // --- 2. Fetch Data and Update Welcome Text ---
             const docSnap = await getDoc(analyticsRef);
             if (docSnap.exists()) {
                 const counts = docSnap.data();
                 const nfcCount = counts.nfcVisitors || 0;
                 const nonNfcCount = counts.nonNfcVisitors || 0;
                 const totalVisitors = nfcCount + nonNfcCount;
-                
                 const welcomeText = document.getElementById('welcome-text');
                 
                 if (totalVisitors > 0) {
                     const percentage = ((nfcCount / totalVisitors) * 100).toFixed(2);
                     welcomeText.innerHTML = `Thank you for visiting my landing page. <br> Did you know <b>${percentage}%</b> of visitors arrive via the NFC tag in my card?`;
                 }
-
                 if (isNfcVisitor) {
                     welcomeText.classList.add('nfc-glow');
                     setTimeout(() => welcomeText.classList.remove('nfc-glow'), 3000);
                 }
             }
             
-            // --- 3. Handle Survey Popup ---
             setTimeout(() => popup.classList.remove('is-hidden'), 1500);
-
             const hidePopup = () => popup.classList.add('is-hidden');
             hideBtn.addEventListener('click', hidePopup);
 
             submitBtn.addEventListener('click', async () => {
                 const companyInput = document.getElementById('companyInput');
                 const companyName = companyInput.value.trim();
+                
+                await updateDoc(sessionRef, {
+                    surveySubmitted: true,
+                    companyName: companyName || "Anonymous"
+                });
 
                 if (companyName) {
                     await addDoc(collection(db, 'surveys'), {
                         companyName: companyName,
-                        submittedAt: serverTimestamp()
+                        submittedAt: serverTimestamp(),
+                        sessionId: sessionId 
                     });
                 }
                 
@@ -196,18 +201,26 @@
                 setTimeout(hidePopup, 1500);
             });
 
-            // --- 4. Handle Email Button Copy ---
+            const trackableButtons = document.querySelectorAll('.track-click');
+            trackableButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const buttonName = button.dataset.trackName;
+                    updateDoc(sessionRef, {
+                        clickedButtons: arrayUnion({
+                            name: buttonName,
+                            timestamp: new Date()
+                        })
+                    });
+                });
+            });
+
             const originalEmailBtnText = emailBtn.innerText;
             emailBtn.addEventListener('click', () => {
                 const email = emailBtn.dataset.email;
                 navigator.clipboard.writeText(email).then(() => {
                     emailBtn.innerText = 'Copied!';
-                    setTimeout(() => {
-                        emailBtn.innerText = originalEmailBtnText;
-                    }, 2000); // Reverts after 2 seconds
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
-                });
+                    setTimeout(() => { emailBtn.innerText = originalEmailBtnText; }, 2000);
+                }).catch(err => { console.error('Failed to copy text: ', err); });
             });
         }
 
