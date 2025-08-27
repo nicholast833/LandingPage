@@ -77,7 +77,9 @@
                 </div>
                 <div class="contact-card email-card bg-gray-800 rounded-xl p-6 flex flex-col items-center text-center">
                     <div class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center mb-4"> <i class="fas fa-envelope text-white text-2xl"></i> </div>
-                    <a href="mailto:nicholast833@gmail.com" class="mt-auto w-full"> <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition duration-300"> Email </button> </a>
+                    <button id="email-btn" data-email="nicholast833@gmail.com" class="mt-auto w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition duration-300">
+                        Email
+                    </button>
                 </div>
             </div>
         </section>
@@ -89,7 +91,7 @@
             <div id="popupContent" class="p-4 text-center transition-all duration-300">
                 <div id="formSection">
                     <p class="text-gray-200 mb-2 text-sm">Love Data? Me too!</p>
-                    <p class="text-gray-400 text-xs mb-3">If you're representing a company, I'd appreciate you sharing its name.</p>
+                    <p class="text-gray-400 text-xs mb-3">If you're representing a company, <br> I'd appreciate you sharing its name.</p>
                     <input type="text" id="companyInput" placeholder="Your Company" class="w-full bg-gray-700 text-white px-3 py-2 rounded-md mb-3 text-sm text-center focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                     <button id="submitCompany" class="w-full border border-primary-500 text-primary-400 hover:bg-primary-900/40 px-3 py-2 rounded-md text-sm transition duration-300">Submit</button>
                 </div>
@@ -101,6 +103,7 @@
     </div>
     
     <script type="module">
+        // Import the functions you need from the SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
         import { 
             getFirestore, 
@@ -113,6 +116,7 @@
             serverTimestamp 
         } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
+        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCie6KnCFUvvp62kC409HgBqpOPNIQdr_c",
             authDomain: "landing-page-fe3ce.firebaseapp.com",
@@ -123,6 +127,7 @@
             measurementId: "G-3GX6VYVKWG"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
@@ -132,15 +137,18 @@
             const popupContent = document.getElementById('popupContent');
             const hideBtn = document.getElementById('hidePopup');
             const submitBtn = document.getElementById('submitCompany');
+            const emailBtn = document.getElementById('email-btn'); // Get email button
             const urlParams = new URLSearchParams(window.location.search);
             const isNfcVisitor = urlParams.get('source') === 'nfc';
 
+            // --- 1. Track Visitor ---
             const analyticsRef = doc(db, 'analytics', 'visitorCounts');
             const fieldToIncrement = isNfcVisitor ? 'nfcVisitors' : 'nonNfcVisitors';
             await setDoc(analyticsRef, { 
                 [fieldToIncrement]: increment(1) 
             }, { merge: true });
 
+            // --- 2. Fetch Data and Update Welcome Text ---
             const docSnap = await getDoc(analyticsRef);
             if (docSnap.exists()) {
                 const counts = docSnap.data();
@@ -161,6 +169,7 @@
                 }
             }
             
+            // --- 3. Handle Survey Popup ---
             setTimeout(() => popup.classList.remove('is-hidden'), 1500);
 
             const hidePopup = () => popup.classList.add('is-hidden');
@@ -176,16 +185,29 @@
                         submittedAt: serverTimestamp()
                     });
                 }
-
+                
                 popupHeader.style.display = 'none';
                 document.getElementById('formSection').classList.add('hidden');
-
                 const thankYouSection = document.getElementById('thankYouSection');
                 thankYouSection.classList.remove('hidden');
                 popupContent.classList.remove('p-4');
                 popupContent.classList.add('p-3');
-
+                
                 setTimeout(hidePopup, 1500);
+            });
+
+            // --- 4. Handle Email Button Copy ---
+            const originalEmailBtnText = emailBtn.innerText;
+            emailBtn.addEventListener('click', () => {
+                const email = emailBtn.dataset.email;
+                navigator.clipboard.writeText(email).then(() => {
+                    emailBtn.innerText = 'Copied!';
+                    setTimeout(() => {
+                        emailBtn.innerText = originalEmailBtnText;
+                    }, 2000); // Reverts after 2 seconds
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
             });
         }
 
